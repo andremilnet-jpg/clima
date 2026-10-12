@@ -1,0 +1,207 @@
+/* ===== Temas dinâmicos (fundo muda conforme o tempo) ===== */
+:root {
+  --texto: #ffffff;
+  --texto-suave: rgba(255, 255, 255, 0.82);
+  --vidro: rgba(8, 20, 40, 0.30);
+  --vidro-forte: rgba(8, 20, 40, 0.48);
+  --borda: rgba(255, 255, 255, 0.18);
+  --destaque: #ffd166;
+  --chuva: #7fd3ff;
+  --raio: 16px;
+}
+
+body[data-tema="sol"]        { --fundo: linear-gradient(170deg, #0b5cad 0%, #1f7fd1 55%, #3d9be0 100%); }
+body[data-tema="nublado"]    { --fundo: linear-gradient(170deg, #3e4f63 0%, #5a6d82 55%, #74869a 100%); }
+body[data-tema="chuva"]      { --fundo: linear-gradient(170deg, #1f3347 0%, #2f4b66 55%, #3f5f7d 100%); }
+body[data-tema="tempestade"] { --fundo: linear-gradient(170deg, #17122b 0%, #2c2547 55%, #433a66 100%); }
+body[data-tema="noite"]      { --fundo: linear-gradient(170deg, #050b1f 0%, #0e1b3d 55%, #1b2b58 100%); }
+
+* { box-sizing: border-box; }
+
+html { background: #2f4b66; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--fundo, #3e4f63);
+  background-attachment: fixed;
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+  transition: background 0.6s ease;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+}
+
+/* ===== Topo e busca ===== */
+.marca {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 4px 0 12px;
+  color: var(--texto-suave);
+}
+.marca span { color: var(--texto); font-weight: 800; }
+
+.busca { position: relative; }
+
+#campo-busca {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #10202f;
+  outline: none;
+}
+#campo-busca:focus { box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.7); }
+
+.sugestoes {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  margin: 0; padding: 6px;
+  list-style: none;
+  background: #ffffff;
+  color: #10202f;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  max-height: 320px;
+  overflow-y: auto;
+}
+.sugestoes li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sugestoes li small { color: #5b6b7a; }
+.sugestoes li[aria-selected="true"], .sugestoes li:hover { background: #e8f1fb; }
+.sugestoes li.info { cursor: default; color: #5b6b7a; }
+.sugestoes li.info:hover { background: none; }
+
+/* ===== Estados ===== */
+.status { min-height: 1.4em; margin: 12px 4px; color: var(--texto-suave); }
+.status.erro { color: #ffe0e0; font-weight: 600; }
+.status button {
+  margin-left: 8px; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid var(--borda); background: var(--vidro-forte); color: var(--texto);
+  cursor: pointer;
+}
+
+.vazio { text-align: center; padding: 48px 16px; color: var(--texto-suave); }
+.vazio-icone { font-size: 4rem; }
+
+/* ===== Cartões ===== */
+.cartao {
+  background: var(--vidro);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.atual {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.cidade-nome { margin: 0; font-size: 1.35rem; }
+.atual-desc { margin: 2px 0 0; color: var(--texto-suave); }
+.atual-minmax { margin: 4px 0 0; font-size: 0.9rem; color: var(--texto-suave); }
+.atual-temp { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+#atual-icone { font-size: 2.6rem; }
+#atual-valor { font-size: 3rem; font-weight: 300; }
+
+.titulo-secao { margin: 8px 4px 10px; font-size: 1rem; font-weight: 600; }
+.titulo-secao.dentro { margin: 0 0 10px; }
+
+/* ===== Faixa de dias ===== */
+.dias {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 2px 2px 12px;
+  margin-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.dia {
+  flex: 0 0 84px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  border: 1px solid var(--borda);
+  background: var(--vidro);
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.dia:hover { background: var(--vidro-forte); }
+.dia:focus-visible { outline: 3px solid var(--destaque); outline-offset: 2px; }
+.dia[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.92);
+  color: #10202f;
+  border-color: transparent;
+}
+.dia-nome { font-weight: 700; font-size: 0.85rem; text-transform: capitalize; }
+.dia-data { font-size: 0.75rem; opacity: 0.8; }
+.dia-icone { font-size: 1.6rem; line-height: 1.3; }
+.dia-temp { font-size: 0.85rem; }
+.dia-temp .min { opacity: 0.7; }
+.dia-chuva { font-size: 0.72rem; opacity: 0.85; }
+
+/* ===== Gráfico ===== */
+.grafico-wrap { position: relative; height: 220px; }
+
+/* ===== Tabela ===== */
+.tabela-wrap { padding: 0; max-height: 440px; overflow-y: auto; }
+.tabela { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tabela th {
+  position: sticky; top: 0;
+  background: rgb(12, 24, 42);
+  z-index: 1;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  padding: 10px 4px;
+  text-align: right;
+}
+.tabela th small { display: block; font-weight: 400; font-size: 0.7rem; }
+.tabela td { padding: 9px 4px; text-align: right; border-top: 1px solid var(--borda); white-space: nowrap; }
+.tabela th:first-child, .tabela td:first-child { text-align: left; padding-left: 12px; }
+.tabela th:last-child, .tabela td:last-child { padding-right: 12px; }
+.tabela td.ic { text-align: center; font-size: 1.2rem; }
+.tabela td.temp { font-weight: 700; }
+.tabela tr.agora td { background: rgba(255, 209, 102, 0.22); }
+.tabela tr.agora td:first-child { font-weight: 700; }
+.tabela td.chove { color: var(--chuva); font-weight: 600; }
+
+.rodape { text-align: center; font-size: 0.8rem; color: var(--texto-suave); margin-top: 8px; }
+.rodape a { color: var(--texto); }
+
+/* ===== Telas maiores ===== */
+@media (min-width: 720px) {
+  .app { padding-top: 28px; }
+  .marca { font-size: 1.3rem; }
+  .dia { flex-basis: 96px; }
+  .grafico-wrap { height: 280px; }
+  .tabela { font-size: 0.95rem; }
+}

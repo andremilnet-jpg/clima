@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Previsão do Tempo Brasil</title>
+  <meta name="description" content="Previsão do tempo hora a hora para qualquer cidade do Brasil, até 15 dias.">
+  <meta name="theme-color" content="#0b4f94">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-tema="nublado">
+  <main class="app">
+    <header class="topo">
+      <h1 class="marca">Previsão do Tempo <span>Brasil</span></h1>
+
+      <div class="busca" role="search">
+        <label for="campo-busca" class="sr-only">Buscar cidade</label>
+        <input id="campo-busca" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Digite uma cidade (ex.: Campinas)"
+               role="combobox" aria-autocomplete="list" aria-expanded="false"
+               aria-controls="sugestoes">
+        <ul id="sugestoes" class="sugestoes" role="listbox" hidden></ul>
+      </div>
+    </header>
+
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <section id="vazio" class="vazio">
+      <div class="vazio-icone" aria-hidden="true">🌤️</div>
+      <p>Busque uma cidade brasileira para ver a previsão hora a hora dos próximos 15 dias.</p>
+    </section>
+
+    <section id="conteudo" class="conteudo" hidden>
+      <div class="atual cartao">
+        <div>
+          <h2 id="cidade-nome" class="cidade-nome"></h2>
+          <p id="atual-desc" class="atual-desc"></p>
+          <p id="atual-minmax" class="atual-minmax"></p>
+        </div>
+        <div class="atual-temp">
+          <span id="atual-icone" aria-hidden="true"></span>
+          <span id="atual-valor"></span>
+        </div>
+      </div>
+
+      <h3 class="titulo-secao">Próximos 15 dias</h3>
+      <div id="dias" class="dias" role="group" aria-label="Escolha o dia"></div>
+
+      <div class="cartao">
+        <h3 id="dia-titulo" class="titulo-secao dentro"></h3>
+        <div class="grafico-wrap">
+          <canvas id="grafico" aria-label="Gráfico de temperatura e chuva por hora" role="img"></canvas>
+        </div>
+      </div>
+
+      <div class="cartao tabela-wrap" id="tabela-wrap">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th scope="col">Hora</th>
+              <th scope="col"><span class="sr-only">Condição</span></th>
+              <th scope="col">Temp.</th>
+              <th scope="col">Umid.</th>
+              <th scope="col">Vento <small>km/h</small></th>
+              <th scope="col">Chuva <small>mm</small></th>
+            </tr>
+          </thead>
+          <tbody id="horas"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="rodape">
+      Dados: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
